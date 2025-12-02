@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace datingapp1
+namespace ModelDates
 {
     public class LikesList : List<Likes>
     {

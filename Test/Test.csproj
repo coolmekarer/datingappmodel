@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5C99FEC7-60E2-4C09-BBB2-8E8128DED6DC}</ProjectGuid>
+    <ProjectGuid>{AD92E9D9-3EA2-4929-B16A-3D14204ECF2D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>datingapp1</RootNamespace>
-    <AssemblyName>datingapp1</AssemblyName>
+    <RootNamespace>Test</RootNamespace>
+    <AssemblyName>Test</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,29 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseEntity.cs" />
-    <Compile Include="City.cs" />
-    <Compile Include="CityList.cs" />
-    <Compile Include="DistanceBetweenCities.cs" />
-    <Compile Include="DistanceBetweenCitiesList.cs" />
-    <Compile Include="Gender.cs" />
-    <Compile Include="GenderList.cs" />
-    <Compile Include="Likes.cs" />
-    <Compile Include="LikesList.cs" />
-    <Compile Include="Manager.cs" />
-    <Compile Include="ManagerList.cs" />
-    <Compile Include="Matches.cs" />
-    <Compile Include="MatchesList.cs" />
-    <Compile Include="Messages.cs" />
-    <Compile Include="MessagesList.cs" />
-    <Compile Include="Photos.cs" />
-    <Compile Include="PhotosList.cs" />
-    <Compile Include="Preferences.cs" />
-    <Compile Include="PreferencesList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace datingapp1
+namespace ModelDates
 {
     public class MatchesList:List<Matches>
     {
