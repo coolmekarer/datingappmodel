@@ -67,7 +67,31 @@ namespace TestViewModel
             MessagesDB medb = new();
             MessagesList messagesList = medb.SelectAll();
             foreach (Messages me in messagesList)
-                Console.WriteLine($"{me.Match.User1} & {me.Match.User2} : {me.Sender} : {me.MessageText} : {me.SentAt}");
+                Console.WriteLine($"{me.Match.User1}" +
+                    $" & {me.Match.User2} : {me.Sender} : {me.MessageText} : {me.SentAt}"); 
+
+
+            cdb = new();
+            CityList cList = cdb.SelectAll();
+            foreach (City c in cList)
+                Console.WriteLine(c.Name);
+
+            City cityToUpdate = cList[0];
+            cityToUpdate.Name += " נננ";
+            cdb.Update(cityToUpdate);
+            int x = cdb.SaveChanges();
+            Console.WriteLine($"{x} rows were updated");
+
+            gdb = new();
+            GenderList gList = gdb.SelectAll();
+            foreach (Gender g in gList)
+                Console.WriteLine(g.Name);
+
+            Gender genderToUpdate = gList[0];
+            genderToUpdate.Name += " נננ";
+            gdb.Update(genderToUpdate);
+            int xx = gdb.SaveChanges();
+            Console.WriteLine($"{x} rows were updated");
         }
     }
 }

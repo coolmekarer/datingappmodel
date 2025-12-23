@@ -1,6 +1,7 @@
 ﻿using ModelDates;
 using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,29 @@ namespace ViewModel
             list = db.SelectAll();
             Gender g = list.Find(item => item.Id == id);
             return g;
+        }
+
+        protected override void CreateDeletedSQL(BaseEntity entity, OleDbCommand cmd)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void CreateInsertdSQL(BaseEntity entity, OleDbCommand cmd)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
+        {
+            Gender g = entity as Gender;
+            if (g != null)
+            {
+                string sqlStr = $"UPDATE Gender SET GenderName=@gName WHERE ID=@id";
+
+                command.CommandText = sqlStr;
+                command.Parameters.Add(new OleDbParameter("@gName", g.Name));
+                command.Parameters.Add(new OleDbParameter("@id", g.Id));
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ModelDates;
 using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,8 +43,27 @@ namespace ViewModel
             return g;
         }
 
+        protected override void CreateDeletedSQL(BaseEntity entity, OleDbCommand cmd)
+        {
+            throw new NotImplementedException();
+        }
 
+        protected override void CreateInsertdSQL(BaseEntity entity, OleDbCommand cmd)
+        {
+            throw new NotImplementedException();
+        }
 
+        protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
+        {
+            City c = entity as City;
+            if (c != null)
+            {
+                string sqlStr = $"UPDATE City SET CityName=@cName WHERE ID=@id";
 
+                command.CommandText = sqlStr;
+                command.Parameters.Add(new OleDbParameter("@cName", c.Name));
+                command.Parameters.Add(new OleDbParameter("@id", c.Id));
+            }
+        }
     }
 }
