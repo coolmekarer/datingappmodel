@@ -1,6 +1,8 @@
 ﻿
 using ModelDates;
 using System;
+using System.Buffers;
+using System.ComponentModel.DataAnnotations;
 using ViewModel;
 namespace TestViewModel
 {
@@ -77,7 +79,7 @@ namespace TestViewModel
                 Console.WriteLine(c.Name);
 
             City cityToUpdate = cList[0];
-            cityToUpdate.Name += " נננ";
+            cityToUpdate.Name = " נננ";
             cdb.Update(cityToUpdate);
             int x = cdb.SaveChanges();
             Console.WriteLine($"{x} rows were updated");
@@ -88,10 +90,33 @@ namespace TestViewModel
                 Console.WriteLine(g.Name);
 
             Gender genderToUpdate = gList[0];
-            genderToUpdate.Name += " נננ";
+            genderToUpdate.Name = " נננ";
             gdb.Update(genderToUpdate);
             int xx = gdb.SaveChanges();
             Console.WriteLine($"{x} rows were updated");
+
+            udb = new();
+            UserList uList = udb.SelectAll();
+            foreach (User u in uList)
+                Console.WriteLine(u.Username); 
+
+            User userToUpdate = uList[0];
+            userToUpdate.City = cList.First();
+            userToUpdate.Age = 100;
+            userToUpdate.Bio = "lololollllllllllllllllll";
+            userToUpdate.Email = "meow@gmail.com";
+            userToUpdate.Username = "Mazgan";
+            userToUpdate.Password = "4747";
+            userToUpdate.CreatedAt= DateTime.Now;
+            userToUpdate.DateOfBirth = DateTime.Now;
+            userToUpdate.Gender = gList.Last();
+            udb.Update(userToUpdate);
+            x = udb.SaveChanges();
+            Console.WriteLine($"{x} rows were updated");
+            uList = udb.SelectAll();
+            foreach (User u in uList)
+                Console.WriteLine(u.Username);
+
         }
     }
 }
