@@ -29,6 +29,7 @@ namespace ViewModel
             u.Bio = reader["Bio"].ToString();
             u.Gender= GenderDB.SelectById((int)reader["Gender"]);
             u.City= CityDB.SelectById((int)reader["City"]);
+
             u.CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()) ;
             u.Age = int.Parse(reader["Age"].ToString());
             base.CreateModel(entity);
