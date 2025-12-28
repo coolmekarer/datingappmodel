@@ -105,13 +105,14 @@ namespace TestViewModel
             userToUpdate.Age = 100;
             userToUpdate.Bio = "lololollllllllllllllllll";
             userToUpdate.Email = "meow@gmail.com";
-            userToUpdate.Username = "Mazgan";
+            userToUpdate.Username = "Mazgan111";
             userToUpdate.Password = "4747";
-            userToUpdate.CreatedAt= DateTime.Now;
+            userToUpdate.CreatedAt = DateTime.Now;
             userToUpdate.DateOfBirth = DateTime.Now;
             userToUpdate.Gender = gList.Last();
             udb.Update(userToUpdate);
             x = udb.SaveChanges();
+            Console.WriteLine(System.IO.Path.GetFullPath("YourDatabaseName.accdb"));
             Console.WriteLine($"{x} rows were updated");
             uList = udb.SelectAll();
             foreach (User u in uList)

@@ -65,26 +65,40 @@ namespace ViewModel
             User c = entity as User;
             if (c != null)
             {
-                string sqlStr = $"UPDATE [User] SET Username=@cUsername,City=@ccode, " +
-                    $"Email=@cEmail, [Password]=@cPassword, Gender=@cGender, " +
-                    $"DateOfBirth=@cDateOfBirth, Bio=@cBio," +
-                    $" Age=@cAge," +
-                    $"CreatedAt=@cCreatedAt" +
-                                $" WHERE ID=@id";
+                string sqlStr = "UPDATE [User] SET Username=?, City=?, Email=?, [Password]=?, " +
+                                "Gender=?, DateOfBirth=?, Bio=?, Age=?, CreatedAt=? " +
+                                "WHERE ID=?";
 
-                command.CommandText = sqlStr;
-                command.Parameters.Add(new OleDbParameter("@cUsername", c.Username));
-                command.Parameters.Add(new OleDbParameter("@ccode", c.City.Id));
-                command.Parameters.Add(new OleDbParameter("@Email", c.Email));
-                command.Parameters.Add(new OleDbParameter("@cPassword", c.Password));
-                command.Parameters.Add(new OleDbParameter("@cGender", c.Gender.Id));
-                command.Parameters.Add(new OleDbParameter("@cDateOfBirth", c.DateOfBirth));
-                command.Parameters.Add(new OleDbParameter("@cBio", c.Bio));
-                command.Parameters.Add(new OleDbParameter("@cAge", c.Age));
-                command.Parameters.Add(new OleDbParameter("@cCreatedAt", c.CreatedAt));
-                command.Parameters.Add(new OleDbParameter("@cId", c.Id));
-              
-               
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // 1. Text fields
+                cmd.Parameters.Add("@cUsername", OleDbType.VarWChar).Value = c.Username;
+
+                // 2. Numeric fields (Ensure these are integers in Access)
+                cmd.Parameters.Add("@ccode", OleDbType.Integer).Value = c.City.Id;
+
+                // 3. Text fields
+                cmd.Parameters.Add("@cEmail", OleDbType.VarWChar).Value = c.Email;
+                cmd.Parameters.Add("@cPassword", OleDbType.VarWChar).Value = c.Password;
+
+                // 4. Numeric/Gender field
+                cmd.Parameters.Add("@cGender", OleDbType.Integer).Value = c.Gender.Id;
+
+                // 5. Date fields (CRITICAL: Must be OleDbType.Date)
+                cmd.Parameters.Add("@cDateOfBirth", OleDbType.Date).Value = c.DateOfBirth;
+
+                // 6. Memo/Long Text field
+                cmd.Parameters.Add("@cBio", OleDbType.VarWChar).Value = (object)c.Bio ?? DBNull.Value;
+
+                // 7. Age (Integer)
+                cmd.Parameters.Add("@cAge", OleDbType.Integer).Value = c.Age;
+
+                // 8. CreatedAt (Date)
+                cmd.Parameters.Add("@cCreatedAt", OleDbType.Date).Value = c.CreatedAt;
+
+                // 9. WHERE ID (Integer)
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
             }
         }
     }

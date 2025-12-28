@@ -14,4 +14,10 @@
     <ProjectReference Include="..\ModelDates\ModelDates.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="datesaccess.accdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
