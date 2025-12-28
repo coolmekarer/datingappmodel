@@ -92,6 +92,7 @@ namespace TestViewModel
             Gender genderToUpdate = gList[0];
             genderToUpdate.Name = " נננ";
             gdb.Update(genderToUpdate);
+
             int xx = gdb.SaveChanges();
             Console.WriteLine($"{x} rows were updated");
 
