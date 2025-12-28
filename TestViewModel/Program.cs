@@ -84,6 +84,7 @@ namespace TestViewModel
             int x = cdb.SaveChanges();
             Console.WriteLine($"{x} rows were updated");
 
+
             gdb = new();
             GenderList gList = gdb.SelectAll();
             foreach (Gender g in gList)
