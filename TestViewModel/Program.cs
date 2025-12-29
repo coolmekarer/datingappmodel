@@ -12,9 +12,9 @@ namespace TestViewModel
         {
             CityDB cdb = new();
             CityList cityList = cdb.SelectAll();
-            foreach(City c in cityList)
-            Console.WriteLine(c.Name);
-            
+            foreach (City c in cityList)
+                Console.WriteLine(c.Name);
+
             GenderDB gdb = new();
             GenderList genderList = gdb.SelectAll();
             foreach (Gender g in genderList)
@@ -24,53 +24,53 @@ namespace TestViewModel
             UserList userList = udb.SelectAll();
             foreach (User u in userList)
             {
-                Console.WriteLine(u.Username+" : "+u.Gender);
-                Console.WriteLine(u.Password+
-               " : "+ u.Email+" : "+ u.Age+" : "+ u.Bio+" : "+ u.City+
-               " : " + u.CreatedAt +" : "+ u.DateOfBirth);
+                Console.WriteLine(u.Username + " : " + u.Gender);
+                Console.WriteLine(u.Password +
+               " : " + u.Email + " : " + u.Age + " : " + u.Bio + " : " + u.City +
+               " : " + u.CreatedAt + " : " + u.DateOfBirth);
             }
-           Console.BackgroundColor = ConsoleColor.Red;
+            Console.BackgroundColor = ConsoleColor.Red;
 
             DistanceBetweenCitiesDB ddb = new();
             DistanceBetweenCitiesList distancebetweencitiesList = ddb.SelectAll();
             foreach (DistanceBetweenCities d in distancebetweencitiesList)
-                Console.WriteLine(d.City1+" : "+ d.City2+" : "+d.DistanceKm); 
+                Console.WriteLine(d.City1 + " : " + d.City2 + " : " + d.DistanceKm);
 
             Console.BackgroundColor = ConsoleColor.Yellow;
             PreferencesDB pdb = new();
             PreferencesList preferencesList = pdb.SelectAll();
             foreach (Preferences p in preferencesList)
-                Console.WriteLine(p.User+" : "+ p.MinAge+" : "+ p.MaxAge+" : "+ p.PreferredGender
-                    +" : "+p.MaxDistanceKm);
+                Console.WriteLine(p.User + " : " + p.MinAge + " : " + p.MaxAge + " : " + p.PreferredGender
+                    + " : " + p.MaxDistanceKm);
 
             LikesDB ldb = new();
             LikesList likesList = ldb.SelectAll();
             foreach (Likes l in likesList)
-                Console.WriteLine(l.Liker+"  :  "+l.LikedUser);
+                Console.WriteLine(l.Liker + "  :  " + l.LikedUser);
 
             PhotosDB phdb = new();
             PhotosList photosList = phdb.SelectAll();
             foreach (Photos ph in photosList)
-                Console.WriteLine(ph.User+" : "+ ph.Url); 
+                Console.WriteLine(ph.User + " : " + ph.Url);
 
             MatchesDB mdb = new();
             MatchesList matchesList = mdb.SelectAll();
             foreach (Matches m in matchesList)
-                Console.WriteLine(m.User1 + "  :  " + m.User2); 
+                Console.WriteLine(m.User1 + "  :  " + m.User2);
 
             ManagerDB mandb = new();
             ManagerList managerList = mandb.SelectAll();
             foreach (Manager man in managerList)
                 Console.WriteLine(man.Password +
-               " : "+man.MangPassword+" : " + man.Email + " : " + man.Age + 
+               " : " + man.MangPassword + " : " + man.Email + " : " + man.Age +
                " : " + man.Bio + " : " + man.City +
-               " : " + man.CreatedAt + " : " + man.DateOfBirth); 
+               " : " + man.CreatedAt + " : " + man.DateOfBirth);
 
             MessagesDB medb = new();
             MessagesList messagesList = medb.SelectAll();
             foreach (Messages me in messagesList)
                 Console.WriteLine($"{me.Match.User1}" +
-                    $" & {me.Match.User2} : {me.Sender} : {me.MessageText} : {me.SentAt}"); 
+                    $" & {me.Match.User2} : {me.Sender} : {me.MessageText} : {me.SentAt}");
 
 
             cdb = new();
@@ -100,7 +100,7 @@ namespace TestViewModel
             udb = new();
             UserList uList = udb.SelectAll();
             foreach (User u in uList)
-                Console.WriteLine(u.Username); 
+                Console.WriteLine(u.Username);
 
             User userToUpdate = uList[0];
             userToUpdate.City = cList.First();
@@ -119,6 +119,27 @@ namespace TestViewModel
             uList = udb.SelectAll();
             foreach (User u in uList)
                 Console.WriteLine(u.Username);
+
+            ddb = new();
+            DistanceBetweenCitiesList dList = ddb.SelectAll();
+            foreach (DistanceBetweenCities d in dList)
+                Console.WriteLine(d.City1);
+
+            DistanceBetweenCities distanceToUpdate = dList[0];
+            distanceToUpdate.City1 = cList.First();
+            distanceToUpdate.City2 = cList.Last();
+            distanceToUpdate.DistanceKm = 85;
+
+            ddb.Update(distanceToUpdate);
+            x = ddb.SaveChanges();
+       
+            Console.WriteLine($"{x} rows were updated");
+            dList = ddb.SelectAll();
+            foreach (DistanceBetweenCities d in dList)
+            {
+                Console.WriteLine(d.City1+" " + d.City2 + " " + d.DistanceKm);
+               
+            }
 
         }
     }

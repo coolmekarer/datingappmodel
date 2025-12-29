@@ -56,7 +56,30 @@ namespace ViewModel
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            DistanceBetweenCities c = entity as DistanceBetweenCities;
+            if (c != null)
+            {
+                // Removed the comma after KM=? and added a space before WHERE
+                string sqlStr = "UPDATE DistanceBetweenCities SET City1=?, City2=?, KM=? " +
+                                "WHERE ID=?";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // 1. Text fields
+                cmd.Parameters.Add("@cCity1", OleDbType.Integer).Value = c.City1.Id;
+
+                // 2. Numeric fields (Ensure these are integers in Access)
+                cmd.Parameters.Add("@cCity2", OleDbType.Integer).Value = c.City2.Id;
+
+                // 3. Text fields
+                cmd.Parameters.Add("@cKM", OleDbType.Integer).Value = c.DistanceKm;
+        
+
+                // 9. WHERE ID (Integer)
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
+            }
         }
     }
+    
 }
