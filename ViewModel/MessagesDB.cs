@@ -58,7 +58,28 @@ namespace ViewModel
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            Messages c = entity as Messages;
+            if (c != null)
+            {
+                // Remove the comma after the second '?' and add a space before 'WHERE'
+                string sqlStr = "UPDATE Messages SET MatchID=?, SenderID=?, MessageText=?,SentAt=?" +
+                                "WHERE ID=?";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // 1. Text fields
+                cmd.Parameters.Add("@cMatchID", OleDbType.Integer).Value = c.Match.Id;
+
+                // 2. Numeric fields (Ensure these are integers in Access)
+                cmd.Parameters.Add("@cSenderID", OleDbType.Integer).Value = c.Sender.Id;
+
+                cmd.Parameters.Add("@cMessageText", OleDbType.VarWChar).Value = c.MessageText;
+                cmd.Parameters.Add("@cSentAt", OleDbType.Date).Value = c.SentAt;
+
+                // 9. WHERE ID (Integer)
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
+            }
         }
     }
 }

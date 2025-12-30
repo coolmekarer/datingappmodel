@@ -56,7 +56,25 @@ namespace ViewModel
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            Photos c = entity as Photos;
+            if (c != null)
+            {
+                // Remove the comma after the second '?' and add a space before 'WHERE'
+                string sqlStr = "UPDATE Photos SET UserID=?, PhotoURL=?" +
+                                "WHERE ID=?";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // 1. Text fields
+                cmd.Parameters.Add("@cUserID", OleDbType.Integer).Value = c.User.Id;
+
+                // 2. Numeric fields (Ensure these are integers in Access)
+                cmd.Parameters.Add("@cPhotoID", OleDbType.VarWChar).Value = c.Url;
+
+                // 9. WHERE ID (Integer)
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
+            }
         }
     }
 }

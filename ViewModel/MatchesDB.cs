@@ -56,7 +56,25 @@ namespace ViewModel
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            Matches c = entity as Matches;
+            if (c != null)
+            {
+                // Remove the comma after the second '?' and add a space before 'WHERE'
+                string sqlStr = "UPDATE Matches SET User1ID=?, User2ID=? " +
+                                "WHERE ID=?";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // 1. Text fields
+                cmd.Parameters.Add("@cUser1ID", OleDbType.Integer).Value = c.User1.Id;
+
+                // 2. Numeric fields (Ensure these are integers in Access)
+                cmd.Parameters.Add("@cUser2ID", OleDbType.Integer).Value = c.User2.Id;
+
+                // 9. WHERE ID (Integer)
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
+            }
         }
     }
 }

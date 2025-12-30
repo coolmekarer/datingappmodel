@@ -55,7 +55,25 @@ namespace ViewModel
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            Likes c = entity as Likes;
+            if (c != null)
+            {
+                // Remove the comma after the second '?' and add a space before 'WHERE'
+                string sqlStr = "UPDATE Likes SET LikerID=?, LikedID=? " +
+                                "WHERE ID=?";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // 1. Text fields
+                cmd.Parameters.Add("@cLikerID", OleDbType.Integer).Value = c.Liker.Id;
+
+                // 2. Numeric fields (Ensure these are integers in Access)
+                cmd.Parameters.Add("@cLikedID", OleDbType.Integer).Value = c.LikedUser.Id;
+
+                // 9. WHERE ID (Integer)
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
+            }
         }
     }
 }

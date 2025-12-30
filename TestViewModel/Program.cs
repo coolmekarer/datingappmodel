@@ -141,6 +141,91 @@ namespace TestViewModel
                
             }
 
+            ldb = new();
+            LikesList lList = ldb.SelectAll();
+            foreach (Likes l in lList)
+                Console.WriteLine(l.LikedUser);
+
+            Likes likesToUpdate = lList[0];
+            likesToUpdate.Liker = uList.First();
+            likesToUpdate.LikedUser = uList.Last();
+           
+
+            ldb.Update(likesToUpdate);
+            x = ldb.SaveChanges();
+
+            Console.WriteLine($"{x} rows were updated");
+            lList = ldb.SelectAll();
+            foreach (Likes l in lList)
+            {
+                Console.WriteLine(l.Liker + " " + l.LikedUser);
+
+            }
+
+            mdb = new();
+            MatchesList mList = mdb.SelectAll();
+            foreach (Matches m in mList)
+                Console.WriteLine(m.User1);
+
+            Matches matchesToUpdate = mList[0];
+            matchesToUpdate.User1 = uList.First();
+            matchesToUpdate.User2 = uList.Last();
+
+
+            mdb.Update(matchesToUpdate);
+            x = mdb.SaveChanges();
+
+            Console.WriteLine($"{x} rows were updated");
+            mList = mdb.SelectAll();
+            foreach (Matches m in mList)
+            {
+                Console.WriteLine(m.User1 + " " + m.User2);
+
+            }
+
+            medb = new();
+            MessagesList messageList = medb.SelectAll();
+            foreach (Messages m in messageList)
+                Console.WriteLine(m.MessageText);
+
+            Messages messageToUpdate = messageList[0];
+            messageToUpdate.MessageText ="heh lol kek cheburek";
+            
+
+
+            medb.Update(messageToUpdate);
+            x = mdb.SaveChanges();
+
+            Console.WriteLine($"{x} rows were updated");
+            messageList = medb.SelectAll();
+            foreach (Messages m in messageList)
+            {
+                Console.WriteLine(m.Sender + " " + m.MessageText);
+
+            }
+
+            phdb = new();
+            PhotosList phList = phdb.SelectAll();
+            foreach (Photos ph in phList)
+                Console.WriteLine(ph.Url);
+
+            Photos photosToUpdate = phList[0];
+            photosToUpdate.User = uList[0];
+            photosToUpdate.Url = "cat2.jpg";
+
+
+
+            phdb.Update(photosToUpdate);
+            x = phdb.SaveChanges();
+
+            Console.WriteLine($"{x} rows were updated");
+            phList = phdb.SelectAll();
+            foreach (Photos ph in phList)
+            {
+                Console.WriteLine(ph.User+" "+ph.Url);
+
+            }
+
         }
     }
 }
