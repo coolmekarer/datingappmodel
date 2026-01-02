@@ -226,6 +226,60 @@ namespace TestViewModel
 
             }
 
+            pdb = new();
+            PreferencesList pList = pdb.SelectAll();
+            foreach (Preferences p in pList)
+                Console.WriteLine(p.User);
+
+            Preferences preferenceToUpdate = pList[0];
+            preferenceToUpdate.User = uList[0];
+            preferenceToUpdate.PreferredGender=gList[2];
+            preferenceToUpdate.MinAge = 25;
+            preferenceToUpdate.MaxAge = 48;
+            preferenceToUpdate.MaxDistanceKm = 245;
+
+
+
+            pdb.Update(preferenceToUpdate);
+            x = pdb.SaveChanges();
+
+            Console.WriteLine($"{x} rows were updated");
+            pList = pdb.SelectAll();
+            foreach (Preferences p in pList)
+            {
+                Console.WriteLine(p.User + " " + p.PreferredGender+" "+ p.MinAge+" "+p.MaxAge+" "+p.MaxDistanceKm);
+
+            }
+
+            mandb = new();
+            ManagerList manList = mandb.SelectAll();
+            foreach (Manager m in manList)
+                Console.WriteLine(m.Username);
+
+            Manager managerToUpdate = manList[0];
+            managerToUpdate.City = cList.Last();
+            managerToUpdate.Email ="matanishungry@gmail.com";
+            managerToUpdate.Age = 67;
+            managerToUpdate.Bio ="likes to go fishing!";
+            managerToUpdate.CreatedAt =DateTime.Now;
+            managerToUpdate.DateOfBirth= DateTime.Now;
+            managerToUpdate.MangPassword = "i like chicken nuggies";
+            managerToUpdate.Username = "EmoKid";
+            managerToUpdate.Gender=gList.Last();
+
+
+
+            mandb.Update(managerToUpdate);
+            x = mandb.SaveChanges();
+
+            Console.WriteLine($"{x} rows were updated");
+            manList = mandb.SelectAll();
+            foreach (Manager m in manList)
+            {
+                Console.WriteLine( m.City + " " + m.Email + " " + m.Gender + " " + m.Age+" "+m.Bio+" "
+                    +m.CreatedAt+" "+m.CreatedAt+" "+ m.DateOfBirth+" "+ m.MangPassword);
+
+            }
         }
     }
 }

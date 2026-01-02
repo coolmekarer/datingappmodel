@@ -58,7 +58,42 @@ namespace ViewModel
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            Preferences c = entity as Preferences;
+            if (c != null)
+            {
+                // Added spaces at the end of lines to prevent "DistanceMax=?WHERE" merging
+                string sqlStr = "UPDATE Preferences SET " +
+                                "UserID = ?, " +
+                                "PreferredGender = ?, " +
+                                "AgeMin = ?, " +
+                                "AgeMax = ?, " +
+                                "DistanceMax = ? " +
+                                "WHERE ID = ?";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // IMPORTANT: In OleDb, parameters MUST be added in the exact order 
+                // they appear in the SQL string, regardless of the @ name.
+
+                // 1. UserID = ?
+                cmd.Parameters.Add("@cUserID", OleDbType.Integer).Value = c.User.Id;
+
+                // 2. PreferredGender = ?
+                cmd.Parameters.Add("@cPreferredGender", OleDbType.Integer).Value = c.PreferredGender.Id;
+
+                // 3. AgeMin = ?
+                cmd.Parameters.Add("@cAgeMin", OleDbType.Integer).Value = c.MinAge;
+
+                // 4. AgeMax = ?
+                cmd.Parameters.Add("@cAgeMax", OleDbType.Integer).Value = c.MaxAge;
+
+                // 5. DistanceMax = ?
+                cmd.Parameters.Add("@cDistanceMax", OleDbType.Integer).Value = c.MaxDistanceKm;
+
+                // 6. WHERE ID = ?
+                cmd.Parameters.Add("@id", OleDbType.Integer).Value = c.Id;
+            }
         }
     }
 }

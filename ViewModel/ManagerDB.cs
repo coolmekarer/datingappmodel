@@ -1,6 +1,7 @@
 ﻿using ModelDates;
 using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,34 @@ namespace ViewModel
             base.CreateModel(entity);
             return man;
 
+        }
+        // This method handles the logic of WHICH tables to update
+        public override void Update(BaseEntity entity)
+        {
+            Manager man = entity as Manager;
+            if (man != null)
+            {
+                // 1. Queue the update for the Manager table (this class)
+                updated.Add(new ChangeEntity(this.CreateUpdatedSQL, entity));
+
+                // 2. Queue the update for the User table (the base class)
+                updated.Add(new ChangeEntity(base.CreateUpdatedSQL, entity));
+            }
+        }
+
+        // This method builds the actual SQL string for the Manager table
+        protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand command)
+        {
+            Manager man = entity as Manager;
+            if (man != null)
+            {
+                // The SQL command for your Manager-specific fields
+                string sqlStr = "UPDATE Manager SET Pass = @pass WHERE ID = @pid";
+
+                command.CommandText = sqlStr;
+                command.Parameters.Add(new OleDbParameter("@pass", man.MangPassword));
+                command.Parameters.Add(new OleDbParameter("@pid", man.Id));
+            }
         }
     }
 }
