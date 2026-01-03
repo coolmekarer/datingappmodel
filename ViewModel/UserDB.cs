@@ -58,7 +58,27 @@ namespace ViewModel
 
         protected override void CreateInsertdSQL(BaseEntity entity, OleDbCommand cmd)
         {
-            throw new NotImplementedException();
+            User p = entity as User;
+            if (p != null)
+            {
+                // Removed ID from the list because Access handles AutoNumbers automatically
+                string sqlStr = "INSERT INTO [User] (Username, Email, [Password], Gender, DateOfBirth, City, Bio, CreatedAt, Age) " +
+                                "VALUES (@Username, @Email, @Password, @Gender, @DateOfBirth, @City, @Bio, @CreatedAt, @Age)";
+
+                cmd.CommandText = sqlStr;
+                cmd.Parameters.Clear();
+
+                // Parameters must be in the exact order they appear in the SQL string above
+                cmd.Parameters.Add(new OleDbParameter("@Username", p.Username));
+                cmd.Parameters.Add(new OleDbParameter("@Email", p.Email));
+                cmd.Parameters.Add(new OleDbParameter("@Password", p.Password));
+                cmd.Parameters.Add(new OleDbParameter("@Gender", p.Gender.Id)); // Ensure this is an Integer
+                cmd.Parameters.Add(new OleDbParameter("@DateOfBirth", p.DateOfBirth)); // Ensure this is a DateTime
+                cmd.Parameters.Add(new OleDbParameter("@City", p.City.Id)); // Ensure this is an Integer
+                cmd.Parameters.Add(new OleDbParameter("@Bio", p.Bio));
+                cmd.Parameters.Add(new OleDbParameter("@CreatedAt", p.CreatedAt));
+                cmd.Parameters.Add(new OleDbParameter("@Age", p.Age));
+            }
         }
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)

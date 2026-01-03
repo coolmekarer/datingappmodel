@@ -280,6 +280,29 @@ namespace TestViewModel
                     +m.CreatedAt+" "+m.CreatedAt+" "+ m.DateOfBirth+" "+ m.MangPassword);
 
             }
+
+            udb = new();
+            UserList uList1 = udb.SelectAll();
+            foreach (User u in uList1)
+                Console.WriteLine(u.Username);
+
+            User userToInsert = uList[0];
+            userToInsert.City = cList.First();
+            userToInsert.Age = 69;
+            userToInsert.Bio = "pdiddy is my idol";
+            userToInsert.Email = "mari3@gmail.com";
+            userToInsert.Username = "limon4";
+            userToInsert.Password = "limon5757";
+            userToInsert.CreatedAt = DateTime.Now;
+            userToInsert.DateOfBirth = DateTime.Now;
+            userToInsert.Gender = gList.Last();
+            udb.Insert(userToInsert);
+            x = udb.SaveChanges();
+            Console.WriteLine(System.IO.Path.GetFullPath("YourDatabaseName.accdb"));
+            Console.WriteLine($"{x} rows were updated");
+            uList1 = udb.SelectAll();
+            foreach (User u in uList1)
+                Console.WriteLine(u.Username);
         }
     }
 }
