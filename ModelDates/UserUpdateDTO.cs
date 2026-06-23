@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ModelDates
 {
-    public class DiscoveryFeedDTO : BaseEntity
+    public class UserUpdateDTO
     {
-        public int UserId { get; set; }
-        public Preferences Preferences { get; set; }
+        public int Id { get; set; }
+        public string Bio { get; set; }
+        public string ProfilePic { get; set; }
     }
 }

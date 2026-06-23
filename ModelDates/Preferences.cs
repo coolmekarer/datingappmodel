@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ModelDates
 {
-    public class Preferences : BaseEntity
+    public class Preferences : User
     {
         // FIX: Made nullable so API model validation doesn't block incoming registrations
-        public User? User { get; set; }
+       // public User? User { get; set; }
 
         public int AgeMin { get; set; }
         public int AgeMax { get; set; }

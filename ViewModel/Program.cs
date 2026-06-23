@@ -39,8 +39,7 @@ namespace ViewModel
             PreferencesDB pdb = new();
             PreferencesList preferencesList = pdb.SelectAll();
             foreach (Preferences p in preferencesList)
-                Console.WriteLine(p.User+" : "+ p.AgeMin+" : "+ p.AgeMax+" : "+ p.PreferredGender
-                    +" : "+p.DistanceMax);
+            { }
 
             LikesDB ldb = new();
             LikesList likesList = ldb.SelectAll();
@@ -55,21 +54,21 @@ namespace ViewModel
             MatchesDB mdb = new();
             MatchesList matchesList = mdb.SelectAll();
             foreach (Matches m in matchesList)
-                Console.WriteLine(m.User1 + "  :  " + m.User2); 
+                Console.WriteLine(m.User1ID + "  :  " + m.User2ID); 
 
             ManagerDB mandb = new();
             ManagerList managerList = mandb.SelectAll();
             foreach (Manager man in managerList)
                 Console.WriteLine(man.Password +
-               " : "+man.MangPassword+" : " + man.Email + " : " + man.Age + 
+               " : "+man.Pass+" : " + man.Email + " : " + man.Age + 
                " : " + man.Bio + " : " + man.City +
                " : " + man.CreatedAt + " : " + man.DateOfBirth); 
 
             MessagesDB medb = new();
             MessagesList messagesList = medb.SelectAll();
             foreach (Messages me in messagesList)
-                Console.WriteLine($"{me.Match.User1}" +
-                    $" & {me.Match.User2} : {me.Sender} : {me.MessageText} : {me.SentAt}"); 
+                Console.WriteLine($"{me.Match.User1ID}" +
+                    $" & {me.Match.User2ID} : {me.Sender} : {me.MessageText} : {me.SentAt}"); 
 
 
             cdb = new();

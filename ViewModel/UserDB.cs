@@ -30,7 +30,7 @@ namespace ViewModel
             u.Email = HasColumn(reader, "Email") && reader["Email"] != DBNull.Value ? reader["Email"].ToString() : string.Empty;
             u.Password = HasColumn(reader, "Password") && reader["Password"] != DBNull.Value ? reader["Password"].ToString() : string.Empty;
             u.Bio = HasColumn(reader, "Bio") && reader["Bio"] != DBNull.Value ? reader["Bio"].ToString() : string.Empty;
-            u.Profilepic = HasColumn(reader, "ProfilePic") && reader["ProfilePic"] != DBNull.Value ? reader["ProfilePic"].ToString() : string.Empty;
+            u.ProfilePic = HasColumn(reader, "ProfilePic") && reader["ProfilePic"] != DBNull.Value ? reader["ProfilePic"].ToString() : string.Empty;
 
             u.DateOfBirth = HasColumn(reader, "DateOfBirth") && reader["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(reader["DateOfBirth"]) : DateTime.Now.AddYears(-18);
             u.CreatedAt = HasColumn(reader, "CreatedAt") && reader["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedAt"]) : DateTime.Now;
@@ -90,7 +90,7 @@ namespace ViewModel
             cmd.Parameters.Add("@p5", OleDbType.Date).Value = p.DateOfBirth > DateTime.MinValue ? (object)p.DateOfBirth : DBNull.Value;
             cmd.Parameters.Add("@p6", OleDbType.Integer).Value = p.City != null ? (object)p.City.Id : DBNull.Value;
             cmd.Parameters.Add("@p7", OleDbType.LongVarWChar).Value = (object)p.Bio ?? DBNull.Value;
-            cmd.Parameters.Add("@p8", OleDbType.LongVarWChar).Value = (object)p.Profilepic ?? DBNull.Value;
+            cmd.Parameters.Add("@p8", OleDbType.LongVarWChar).Value = (object)p.ProfilePic ?? DBNull.Value;
             cmd.Parameters.Add("@p9", OleDbType.Date).Value = p.CreatedAt > DateTime.MinValue ? (object)p.CreatedAt : DateTime.Now;
             cmd.Parameters.Add("@p10", OleDbType.Integer).Value = (object)p.Age;
         }
@@ -107,7 +107,7 @@ namespace ViewModel
             cmd.Parameters.AddWithValue("?", c.Gender.Id);
             cmd.Parameters.AddWithValue("?", c.DateOfBirth);
             cmd.Parameters.AddWithValue("?", c.Bio ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("?", c.Profilepic ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("?", c.ProfilePic ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("?", c.Age);
             cmd.Parameters.AddWithValue("?", c.CreatedAt);
             cmd.Parameters.AddWithValue("?", c.Id);

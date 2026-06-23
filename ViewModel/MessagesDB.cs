@@ -12,7 +12,6 @@ namespace ViewModel
 
         public MessagesList SelectAll()
         {
-            // Pass SQL string directly to trigger local command execution
             return new MessagesList(base.Select("SELECT * FROM Messages"));
         }
 
@@ -22,10 +21,16 @@ namespace ViewModel
             if (me != null)
             {
                 if (reader["MatchID"] != DBNull.Value)
-                    me.Match = MatchesDB.SelectById(Convert.ToInt32(reader["MatchID"]));
+                {
+                    me.MatchID = Convert.ToInt32(reader["MatchID"]);
+                    me.Match = MatchesDB.SelectById(me.MatchID);
+                }
 
                 if (reader["SenderID"] != DBNull.Value)
-                    me.Sender = UserDB.SelectById(Convert.ToInt32(reader["SenderID"]));
+                {
+                    me.SenderID = Convert.ToInt32(reader["SenderID"]);
+                    me.Sender = UserDB.SelectById(me.SenderID);
+                }
 
                 if (reader["MessageText"] != DBNull.Value)
                     me.MessageText = reader["MessageText"].ToString();
@@ -42,7 +47,8 @@ namespace ViewModel
         public static Messages SelectById(int id)
         {
             using (MessagesDB db = new MessagesDB())
-            {
+            {   
+
                 return db.SelectAll().Find(item => item.Id == id);
             }
         }
@@ -52,7 +58,7 @@ namespace ViewModel
             Messages m = entity as Messages;
             if (m == null) return;
 
-            cmd.CommandText = "DELETE FROM Messages WHERE ID = ?";
+            cmd.CommandText = "DELETE FROM Messages WHERE [ID] = ?";
             cmd.Parameters.Clear();
             cmd.Parameters.AddWithValue("?", m.Id);
         }
@@ -62,12 +68,12 @@ namespace ViewModel
             Messages m = entity as Messages;
             if (m == null) return;
 
-            cmd.CommandText = "INSERT INTO Messages (MatchID, SenderID, MessageText, SentAt) VALUES (?, ?, ?, ?)";
+            cmd.CommandText = "INSERT INTO Messages ([MatchID], [SenderID], [MessageText], [SentAt]) VALUES (?, ?, ?, ?)";
             cmd.Parameters.Clear();
-            cmd.Parameters.AddWithValue("?", m.Match.Id);
-            cmd.Parameters.AddWithValue("?", m.Sender.Id);
+            cmd.Parameters.AddWithValue("?", m.MatchID);
+            cmd.Parameters.AddWithValue("?", m.SenderID);
             cmd.Parameters.AddWithValue("?", m.MessageText);
-            cmd.Parameters.AddWithValue("?", m.SentAt);
+            cmd.Parameters.Add("?", OleDbType.Date).Value = m.SentAt;
         }
 
         protected override void CreateUpdatedSQL(BaseEntity entity, OleDbCommand cmd)
@@ -75,20 +81,18 @@ namespace ViewModel
             Messages m = entity as Messages;
             if (m == null) return;
 
-            cmd.CommandText = "UPDATE Messages SET MatchID = ?, SenderID = ?, MessageText = ?, SentAt = ? WHERE ID = ?";
+            cmd.CommandText = "UPDATE Messages SET [MatchID] = ?, [SenderID] = ?, [MessageText] = ?, [SentAt] = ? WHERE [ID] = ?";
             cmd.Parameters.Clear();
-            cmd.Parameters.AddWithValue("?", m.Match.Id);
-            cmd.Parameters.AddWithValue("?", m.Sender.Id);
+            cmd.Parameters.AddWithValue("?", m.MatchID);
+            cmd.Parameters.AddWithValue("?", m.SenderID);
             cmd.Parameters.AddWithValue("?", m.MessageText);
-            cmd.Parameters.AddWithValue("?", m.SentAt);
+            cmd.Parameters.Add("?", OleDbType.Date).Value = m.SentAt;
             cmd.Parameters.AddWithValue("?", m.Id);
         }
+
         public List<Messages> GetMessagesByMatchId(int matchId)
         {
-            // Fetches only the messages belonging to a specific conversation
-            string sql = "SELECT * FROM Messages WHERE MatchID = ? ORDER BY SentAt ASC";
-
-            // You will need to use the parameterized Select overload we created earlier
+            string sql = "SELECT * FROM Messages WHERE [MatchID] = ? ORDER BY [SentAt] ASC";
             var messages = base.Select(sql, matchId);
             return new MessagesList(messages);
         }

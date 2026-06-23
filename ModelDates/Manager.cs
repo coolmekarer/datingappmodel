@@ -8,7 +8,7 @@ namespace ModelDates
 {
     public class Manager : User
     {
-        public string MangPassword { get; set; } 
+        public string Pass { get; set; } 
         //public List<User> Users { get; set; } = new List<User>();
 
        

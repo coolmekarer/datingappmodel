@@ -16,7 +16,7 @@ namespace interfaceapi
 
         public HttpClient client;
 
-        private readonly string uri = "https://fdgrrqj8-5105.euw.devtunnels.ms/api/Dates/";
+        private readonly string uri = "https://krpx2rgs-5105.uks1.devtunnels.ms/api/Dates/";
 
         public Apiinter()
         {

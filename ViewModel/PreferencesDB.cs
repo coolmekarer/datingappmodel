@@ -5,7 +5,7 @@ using System.Data.OleDb;
 
 namespace ViewModel
 {
-    public class PreferencesDB : BaseDB
+    public class PreferencesDB : UserDB
     {
         public PreferencesList SelectAll()
         {
@@ -24,8 +24,8 @@ namespace ViewModel
         {
             Preferences p = entity as Preferences;
 
-            if (HasColumn(reader, "UserID") && reader["UserID"] != DBNull.Value)
-                p.User = UserDB.SelectById(Convert.ToInt32(reader["UserID"]));
+            //if (HasColumn(reader, "UserID") && reader["UserID"] != DBNull.Value)
+            //    p.User = UserDB.SelectById(Convert.ToInt32(reader["UserID"]));
 
             if (HasColumn(reader, "PreferredGender") && reader["PreferredGender"] != DBNull.Value)
                 p.PreferredGender = GenderDB.SelectById(Convert.ToInt32(reader["PreferredGender"]));
@@ -54,7 +54,7 @@ namespace ViewModel
         {
             using (PreferencesDB db = new PreferencesDB())
             {
-                return db.SelectAll().Find(item => item.User != null && item.User.Id == userId);
+                return db.SelectAll().Find(item => item != null && item.Id == userId);
             }
         }
 
@@ -72,8 +72,8 @@ namespace ViewModel
             Preferences p = entity as Preferences;
             if (p == null) return;
 
-            cmd.CommandText = "INSERT INTO Preferences (UserID, PreferredGender, AgeMin, AgeMax, DistanceMax) VALUES (?, ?, ?, ?, ?)";
-            cmd.Parameters.AddWithValue("?", p.User.Id);
+            cmd.CommandText = "INSERT INTO Preferences (ID, PreferredGender, AgeMin, AgeMax, DistanceMax) VALUES (?, ?, ?, ?, ?)";
+            cmd.Parameters.AddWithValue("?", p.Id);
             cmd.Parameters.AddWithValue("?", p.PreferredGender.Id);
             cmd.Parameters.AddWithValue("?", p.AgeMin);
             cmd.Parameters.AddWithValue("?", p.AgeMax);
@@ -85,13 +85,33 @@ namespace ViewModel
             Preferences p = entity as Preferences;
             if (p == null) return;
 
-            cmd.CommandText = "UPDATE Preferences SET UserID = ?, PreferredGender = ?, AgeMin = ?, AgeMax = ?, DistanceMax = ? WHERE ID = ?";
-            cmd.Parameters.AddWithValue("?", p.User.Id);
+            cmd.CommandText = "UPDATE Preferences SET  PreferredGender = ?, AgeMin = ?, AgeMax = ?, DistanceMax = ? WHERE ID = ?";
+          //  cmd.Parameters.AddWithValue("?", p.User.Id);
             cmd.Parameters.AddWithValue("?", p.PreferredGender.Id);
             cmd.Parameters.AddWithValue("?", p.AgeMin);
             cmd.Parameters.AddWithValue("?", p.AgeMax);
             cmd.Parameters.AddWithValue("?", p.DistanceMax);
             cmd.Parameters.AddWithValue("?", p.Id);
         }
+        public override void Update(BaseEntity entity)
+        {
+            Preferences man = entity as Preferences;
+            if (man != null)
+            {
+                updated.Add(new ChangeEntity(base.CreateUpdatedSQL, entity));
+                updated.Add(new ChangeEntity(this.CreateUpdatedSQL, entity));
+            }
+        }
+
+        public override void Insert(BaseEntity entity)
+        {
+            Preferences man = entity as Preferences;
+            if (man != null)
+            {
+                inserted.Add(new ChangeEntity(base.CreateInsertdSQL, entity));
+                inserted.Add(new ChangeEntity(this.CreateInsertdSQL, entity));
+            }
+        }
+
     }
 }

@@ -8,7 +8,7 @@ namespace ViewModel
 {
     public abstract class BaseDB : IDisposable
     {
-        protected static string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\datesaccess.accdb;";
+        protected static string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\matan\source\repos\datingappmodel5\ViewModel\datesaccess.accdb;Persist Security Info=True;";
         protected static OleDbConnection connection = new OleDbConnection(connectionString);
 
         public abstract BaseEntity NewEntity();
@@ -50,7 +50,13 @@ namespace ViewModel
                     {
                         System.Diagnostics.Debug.WriteLine($"Parameter Value: {param.Value} | Type: {param.Value?.GetType().Name ?? "NULL"}");
                     }
-                    foreach (var item in inserted) { cmd.Parameters.Clear(); item.CreateSqlAction(item.Entity, cmd); records_affected += cmd.ExecuteNonQuery(); }
+                    foreach (var item in inserted) { 
+                        cmd.Parameters.Clear(); 
+                        item.CreateSqlAction(item.Entity, cmd); 
+                        records_affected += cmd.ExecuteNonQuery();
+                        cmd.CommandText = "select @@Identity";
+                        item.Entity.Id = (int)cmd.ExecuteScalar();
+                    }
                     foreach (var item in updated) { cmd.Parameters.Clear(); item.CreateSqlAction(item.Entity, cmd); records_affected += cmd.ExecuteNonQuery(); }
                     foreach (var item in deleted) { cmd.Parameters.Clear(); item.CreateSqlAction(item.Entity, cmd); records_affected += cmd.ExecuteNonQuery(); }
                     trans.Commit();
@@ -58,6 +64,7 @@ namespace ViewModel
             }
             finally { inserted.Clear(); updated.Clear(); deleted.Clear(); }
             return records_affected;
+            
         }
 
         // --- The Select logic ---

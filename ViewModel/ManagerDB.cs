@@ -28,7 +28,7 @@ namespace ViewModel
             Manager man = entity as Manager;
             if (man != null && reader["Pass"] != DBNull.Value)
             {
-                man.MangPassword = reader["Pass"].ToString();
+                man.Pass = reader["Pass"].ToString();
             }
             return man;
         }
@@ -61,7 +61,7 @@ namespace ViewModel
             {
                 cmd.CommandText = "INSERT INTO Manager (Pass, ID) VALUES (?, ?)";
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("?", man.MangPassword);
+                cmd.Parameters.AddWithValue("?", man.Pass);
                 cmd.Parameters.AddWithValue("?", man.Id);
             }
         }
@@ -73,7 +73,7 @@ namespace ViewModel
             {
                 cmd.CommandText = "UPDATE Manager SET Pass = ? WHERE ID = ?";
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("?", man.MangPassword);
+                cmd.Parameters.AddWithValue("?", man.Pass);
                 cmd.Parameters.AddWithValue("?", man.Id);
             }
         }

@@ -207,23 +207,33 @@ namespace ApiSelect.Controllers
                 LikedUser = new User { Id = likedId }
             };
             likesDb.Insert(newLike);
-            likesDb.SaveChanges(); // Make sure to save the changes to the database
+            likesDb.SaveChanges();
 
             // 2. Check for match: Did the 'likedId' person already like 'likerId'?
             bool isMatch = likesDb.HasLiked(likedId, likerId);
 
+            // 3. Handle the match creation
             if (isMatch)
             {
-                // 3. Add to Matches table
                 MatchesDB matchDb = new MatchesDB();
-                // Assuming your Matches entity has properties like User1 and User2
-                matchDb.Insert(new Matches { User1 = new User { Id = likerId }, User2 = new User { Id = likedId } });
-                matchDb.SaveChanges();
 
-                return Ok(new { matchFound = true });
+                // Check if match already exists to prevent duplicates
+                if (!matchDb.MatchExists(likerId, likedId))
+                {
+                    matchDb.Insert(new Matches
+                    {
+                        User1ID = new User { Id = likerId },
+                        User2ID = new User { Id = likedId }
+                    });
+                    matchDb.SaveChanges();
+                }
+
+                // Returning true here informs the WPF app that a match was formed
+                return Ok(true);
             }
 
-            return Ok(new { matchFound = false });
+            // Return false if no match was found
+            return Ok(false);
         }
         [HttpPost]
         public int InsertAManager([FromBody] Manager manager)
@@ -242,26 +252,22 @@ namespace ApiSelect.Controllers
             return x;
         }
         [HttpPost("SendMessage")]
-        public IActionResult SendMessage([FromBody] Messages messages)
+        public IActionResult SendMessage([FromBody] MessageDTO dto) // Use the simple DTO
         {
-            // 1. Set the timestamp here on the server side
-            // This ensures consistency instead of relying on the client's clock
-            messages.SentAt = DateTime.Now;
+            // Convert the simple DTO into the full model for the database
+            Messages msg = new Messages
+            {
+                MatchID = dto.MatchID,
+                SenderID = dto.SenderID,
+                MessageText = dto.MessageText,
+                SentAt = DateTime.Now
+            };
 
-            // 2. Perform the insertion
             MessagesDB db = new MessagesDB();
-            db.Insert(messages);
+            db.Insert(msg);
             int result = db.SaveChanges();
 
-            // 3. Return a standard response
-            if (result > 0)
-            {
-                return Ok(new { success = true });
-            }
-            else
-            {
-                return BadRequest("Failed to send message.");
-            }
+            return result > 0 ? Ok(new { success = true }) : BadRequest("Failed to save.");
         }
         [HttpPost]
         public int InsertAPhotos([FromBody] Photos photos)
@@ -288,12 +294,13 @@ namespace ApiSelect.Controllers
             return x;
         }
         [HttpPost("DiscoveryFeed")]
-        public IActionResult GetDiscoveryFeed([FromBody] User currentUser)
+        public IActionResult GetDiscoveryFeed([FromBody] Preferences currentUser)
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"DEBUG: Filtering for ID: {currentUser.Id}, MinAge: {currentUser.AgeMin}, MaxAge: {currentUser.AgeMax}, Gender: {currentUser.PreferredGender?.Id}");
                 // Fallback checks in case the incoming tracking object or its relations are null
-                if (currentUser == null || currentUser.Preferences == null)
+                if (currentUser == null || currentUser == null)
                 {
                     return BadRequest("User context preferences payload missing.");
                 }
@@ -301,13 +308,13 @@ namespace ApiSelect.Controllers
                 // FIX CS0029: Drill down past the Gender object directly into its internal ID field property!
                 // Assuming your ModelDates.Gender class exposes its primary integer key as .Id or .GenderId.
                 // Change '.Id' below if your class utilizes a different identifier key name (e.g., .Id).
-                int preferredGenderId = currentUser.Preferences.PreferredGender != null
-                    ? currentUser.Preferences.PreferredGender.Id
+                int preferredGenderId = currentUser.PreferredGender != null
+                    ? currentUser.PreferredGender.Id
                     : 3; // Default fallback to 3 (Both) if not set
 
-                int minAge = currentUser.Preferences.AgeMin;
-                int maxAge = currentUser.Preferences.AgeMax;
-                int maxDistance = currentUser.Preferences.DistanceMax;
+                int minAge = currentUser.AgeMin;
+                int maxAge = currentUser.AgeMax;
+                int maxDistance = currentUser.DistanceMax;
 
                 // Call our database selection method with pure integer values
                 // Inside DatesController.cs -> GetDiscoveryFeed
@@ -327,15 +334,32 @@ namespace ApiSelect.Controllers
                 return BadRequest($"Discovery Feed Failed: {ex.Message}");
             }
         }
-
-
-        [HttpPut]
-        public int UpdateAUser([FromBody] User user)
+        [HttpPut("UpdateUser")]
+        public IActionResult UpdateAUser([FromBody] UserUpdateDTO updateDto)
         {
-            UserDB db = new UserDB();
-            db.Update(user);
-            int x = db.SaveChanges();
-            return x;
+            try
+            {
+                using (UserDB db = new UserDB())
+                {
+                    // 1. Get the real user from the DB
+                    User existingUser = UserDB.SelectById(updateDto.Id);
+                    if (existingUser == null) return NotFound("User not found.");
+
+                    // 2. Map ONLY the fields that changed
+                    existingUser.Bio = updateDto.Bio;
+                    existingUser.ProfilePic = updateDto.ProfilePic;
+
+                    // 3. Save
+                    db.Update(existingUser);
+                    db.SaveChanges();
+
+                    return Ok(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPut]
         public int UpdateACity([FromBody] City city)
@@ -535,7 +559,31 @@ namespace ApiSelect.Controllers
             return Ok(new { message = "User deleted successfully" });
         }
 
+        [HttpGet("IsManager/{userId}")]
+        public IActionResult IsManager(int userId)
+        {
+            ManagerDB db = new ManagerDB();
+            // SelectAll() returns your custom ManagerList
+            var list = db.SelectAll();
+            var manager = list.FirstOrDefault(m => m.Id == userId);
 
+            // Return true if found, false otherwise
+            return Ok(manager != null);
+        }
+
+        [HttpGet("{userId}/{password}")] // The [action] is handled by the class route
+        public IActionResult VerifyManager(int userId, string password)
+        {
+            ManagerDB db = new ManagerDB();
+            // This uses your existing INNER JOIN logic
+            var managerList = db.SelectAll();
+
+            // Check if a manager exists with this ID and the provided password
+            var manager = managerList.FirstOrDefault(m => m.Id == userId && m.Pass == password);
+
+            // Returns true if found, false if not
+            return Ok(manager != null);
+        }
 
 
 
