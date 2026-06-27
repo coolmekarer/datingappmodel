@@ -99,18 +99,24 @@ namespace ViewModel
         {
             User c = entity as User;
             if (c == null) return;
+
             cmd.CommandText = "UPDATE [User] SET Username=?, City=?, Email=?, [Password]=?, Gender=?, DateOfBirth=?, Bio=?, ProfilePic=?, Age=?, CreatedAt=? WHERE ID=?";
-            cmd.Parameters.AddWithValue("?", c.Username);
-            cmd.Parameters.AddWithValue("?", c.City.Id);
-            cmd.Parameters.AddWithValue("?", c.Email);
-            cmd.Parameters.AddWithValue("?", c.Password);
-            cmd.Parameters.AddWithValue("?", c.Gender.Id);
-            cmd.Parameters.AddWithValue("?", c.DateOfBirth);
-            cmd.Parameters.AddWithValue("?", c.Bio ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("?", c.ProfilePic ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("?", c.Age);
-            cmd.Parameters.AddWithValue("?", c.CreatedAt);
-            cmd.Parameters.AddWithValue("?", c.Id);
+            cmd.Parameters.Clear();
+
+            // Use explicit OleDbType to prevent "Data type mismatch"
+            cmd.Parameters.Add("@p1", OleDbType.VarWChar).Value = (object)c.Username ?? DBNull.Value;
+            cmd.Parameters.Add("@p2", OleDbType.Integer).Value = c.City != null ? (object)c.City.Id : DBNull.Value;
+            cmd.Parameters.Add("@p3", OleDbType.VarWChar).Value = (object)c.Email ?? DBNull.Value;
+            cmd.Parameters.Add("@p4", OleDbType.VarWChar).Value = (object)c.Password ?? DBNull.Value;
+            cmd.Parameters.Add("@p5", OleDbType.Integer).Value = c.Gender != null ? (object)c.Gender.Id : DBNull.Value;
+            cmd.Parameters.Add("@p6", OleDbType.Date).Value = (object)c.DateOfBirth;
+            cmd.Parameters.Add("@p7", OleDbType.LongVarWChar).Value = (object)c.Bio ?? DBNull.Value;
+            cmd.Parameters.Add("@p8", OleDbType.LongVarWChar).Value = (object)c.ProfilePic ?? DBNull.Value;
+            cmd.Parameters.Add("@p9", OleDbType.Integer).Value = (object)c.Age;
+            cmd.Parameters.Add("@p10", OleDbType.Date).Value = (object)c.CreatedAt;
+
+            // The WHERE clause ID parameter
+            cmd.Parameters.Add("@p11", OleDbType.Integer).Value = (object)c.Id;
         }
     }
 }

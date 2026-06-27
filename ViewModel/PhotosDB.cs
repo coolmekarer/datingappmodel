@@ -40,6 +40,11 @@ namespace ViewModel
                 return db.SelectAll().Find(item => item.Id == id);
             }
         }
+        public List<Photos> SelectByUserId(int userId)
+        {
+            // Filter the list returned by SelectAll based on the User's ID
+            return this.SelectAll().FindAll(item => item.User != null && item.User.Id == userId);
+        }
 
         protected override void CreateDeletedSQL(BaseEntity entity, OleDbCommand cmd)
         {

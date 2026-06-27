@@ -584,6 +584,43 @@ namespace ApiSelect.Controllers
             // Returns true if found, false if not
             return Ok(manager != null);
         }
+        // --- Photo Management Endpoints ---
+
+        [HttpGet("GetPhotos/{userId}")]
+        public IActionResult GetPhotos(int userId)
+        {
+            PhotosDB db = new PhotosDB();
+            return Ok(db.SelectByUserId(userId));
+        }
+
+        [HttpPost("InsertPhoto")]
+        public IActionResult InsertPhoto([FromBody] PhotoDTO dto)
+        {
+            PhotosDB db = new PhotosDB();
+            Photos newPhoto = new Photos
+            {
+                User = new User { Id = dto.UserId },
+                Url = dto.Url
+            };
+
+            db.Insert(newPhoto);
+            int result = db.SaveChanges();
+            return result > 0 ? Ok(new { success = true }) : BadRequest("Failed to save.");
+        }
+
+        [HttpDelete("DeletePhoto/{photoId}")]
+        public IActionResult DeletePhoto(int photoId)
+        {
+            Photos photo = PhotosDB.SelectById(photoId);
+            if (photo == null)
+                return NotFound(new { message = "Photo not found" });
+
+            PhotosDB db = new PhotosDB();
+            db.Delete(photo);
+            db.SaveChanges();
+
+            return Ok(new { message = "Photo deleted successfully" });
+        }
 
 
 
